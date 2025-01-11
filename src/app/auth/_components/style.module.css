@@ -1,0 +1,56 @@
+.sideFrame {
+  background-color: #F0F4FC;
+  /* background-color: greenyellow; */
+  width: 708px;
+  height: 1024px;
+  box-shadow: 0px 15px 100px 0px rgba(0, 0, 0, 0.1);
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+  display: flex;
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+
+.sideBanner {
+  /* background-color: red; */
+  width: 482px;
+  margin-top: 130px;
+  margin-left: 79px;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 80px; 
+}
+
+.main-part {
+  font-family: Poppins, sans-serif;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 45px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+.small-part {
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 90px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #122d9c;
+}
+
+.leading {
+  width: 482px;
+height: 80px;
+font-size: 18px;
+font-weight: 400;
+line-height: 40px;
+text-align: left;
+text-underline-position: from-font;
+text-decoration-skip-ink: none;
+color: rgba(0, 0, 0, 1);
+
+}
