@@ -1,7 +1,6 @@
-import React from 'react'
+import { redirect } from 'next/navigation';
 
 export default function page() {
-  return (
-    <h1>Hello to auth layout and page</h1>
-  )
+  // Redirect to login page when user tries to access restricted pages
+  redirect("/auth/login");
 }

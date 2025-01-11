@@ -1,105 +1,116 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+'use client';
 
-import { useRouter } from "next/navigation"
-import { useState } from "react";
-import * as Yup from "yup";
-import { Formik, Form, ErrorMessage } from "formik";
-import FieldComponent from "@/components/ui/field-component"; 
-import Loading from "@/components/common/loading-component";
-import ButtonComponent from "@/components/ui/button-component";
-import { registerAction } from "@/lib/actions/auth.action";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import * as Yup from 'yup';
+import { Formik, Form, ErrorMessage } from 'formik';
+import FieldComponent from '@/components/ui/field-component';
+import Loading from '@/components/common/loading-component';
+import ButtonComponent from '@/components/ui/button-component'; 
+import { registerAction } from '@/lib/actions/auth.action';
 
 export default function RegisterForm() {
-    // Navigation
-    const router = useRouter();
+  // Navigation
+  const router = useRouter(); // Using Next.js router for navigation
 
-    // State
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+  // State for handling errors and loading state
+  const [error, setError] = useState<string | null>(null); // State for storing any error messages
+  const [loading, setLoading] = useState(false); // State for loading indication during submission
 
-    // Validations
-    const validationSchema = Yup.object({
-      username: Yup.string()
-      .min(3, "Username must be at least 3 characters long")
-      .required("Username is required"),
-      firstName: Yup.string()
-      .min(3, "First name must be at least 3 characters long")
-      .required("First name is required"),
-      lastName: Yup.string()
-      .min(3, "Last name must be at least 3 characters long")
-      .required("Last name is required"),
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      password: Yup.string()
+  // Form validation schema using Yup
+  const validationSchema = Yup.object({
+    username: Yup.string()
+      .min(3, 'Username must be at least 3 characters long') // Validates username length
+      .required('Username is required'), // Ensures username is provided
+    firstName: Yup.string()
+      .min(3, 'First name must be at least 3 characters long') // Validates first name length
+      .required('First name is required'), // Ensures first name is provided
+    lastName: Yup.string()
+      .min(3, 'Last name must be at least 3 characters long') // Validates last name length
+      .required('Last name is required'), // Ensures last name is provided
+    email: Yup.string()
+      .email('Invalid email address') // Validates email format
+      .required('Email is required'), // Ensures email is provided
+    password: Yup.string()
       .matches(
-        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-        "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character."
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, // Validates password complexity
+        'Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.'
       )
-      .required("Password is required"),
-        rePassword: Yup.string()
-        .oneOf([Yup.ref("password"), ""], "Passwords must match")
-        .required("Confirm password is required"),  
-      phone: Yup.string()
-        .typeError("Phone number must be a valid number")
-        .matches(
-          /^01[0125][0-9]{8}$/,
-          "Phone number must start with 01 followed by 0, 1, 2, or 5 and contain 11 digits in total"
-        )
-        .required("Phone number is required"),
-    });
+      .required('Password is required'), // Ensures password is provided
+    rePassword: Yup.string()
+      .oneOf([Yup.ref('password'), ''], 'Passwords must match') // Ensures password and confirm password match
+      .required('Confirm password is required'), // Ensures confirm password is provided
+    phone: Yup.string()
+      .typeError('Phone number must be a valid number') // Ensures phone number is valid
+      .matches(
+        /^01[0125][0-9]{8}$/, // Validates phone number format (starting with '01' and followed by valid digits)
+        'Phone number must start with 01 followed by 0, 1, 2, or 5 and contain 11 digits in total'
+      )
+      .required('Phone number is required'), // Ensures phone number is provided
+  });
 
-    // Functions
-    const handleSubmit = async (values: any) => {
-      setError(null);
-      setLoading(true);
+  // Submit handler
+  const handleSubmit = async (values: any) => {
+    setError(null); // Reset any previous errors
+    setLoading(true); // Set loading state to true to show loading indicator
+
+    try {
+      // Destructuring values from the form submission
+      const {
+        username,
+        firstName,
+        lastName,
+        email,
+        password,
+        rePassword,
+        phone,
+      } = values;
       
-      try {
-        const 
-        {username,
-          firstName,
-          lastName,
-          email,
-          password,
-          rePassword,
-          phone
-        } = values;
-        const response = await registerAction(values);
-        console.log("Response:", response);
-        // You can redirect to another page or show a success message here
-        router.push("/dashboard");
-      } catch (err: any) {
-        setError(err.message);
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      // Sending registration data to the backend
+      const response = await registerAction(values);
+      console.log('Response:', response); // Logging the response for debugging
+
+      // Redirecting to the dashboard upon successful registration
+      router.push('/dashboard');
+    } catch (err: any) {
+      // Handling any errors during the registration process
+      setError(err.message); // Set error message in state
+      console.error(err); // Log error for debugging
+    } finally {
+      // Reset loading state once the process is complete
+      setLoading(false);
     }
+  };
 
   return (
     <div className="flex flex-col gap-8 justify-center items-center h-full">
+      {/* Formik form with validation and submission handler */}
       <Formik
-        initialValues={{ 
-          username: "",
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          rePassword: "",
-          phone: "", }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+        initialValues={{
+          username: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          rePassword: '',
+          phone: '',
+        }}
+        validationSchema={validationSchema} // Applying the validation schema
+        onSubmit={handleSubmit} // Passing the submit handler
       >
         {({ isSubmitting, errors, touched }) => (
           <Form>
+            {/* Username Input Field */}
             <div className="mb-5">
-            <FieldComponent
+              <FieldComponent
                 name="username"
                 type="text"
                 placeholder="Username"
-                className={`${errors.username && touched.username ? 'input-error' : ''}`}
+                className={`${
+                  errors.username && touched.username ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="username"
@@ -107,12 +118,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm"
               />
             </div>
+
+            {/* First Name Input Field */}
             <div className="mb-5">
-            <FieldComponent
+              <FieldComponent
                 name="firstName"
                 type="text"
                 placeholder="First Name"
-                className={`${errors.firstName && touched.firstName ? 'input-error' : ''}`}
+                className={`${
+                  errors.firstName && touched.firstName ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="firstName"
@@ -120,12 +135,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm"
               />
             </div>
+
+            {/* Last Name Input Field */}
             <div className="mb-5">
-            <FieldComponent
+              <FieldComponent
                 name="lastName"
                 type="text"
                 placeholder="Last Name"
-                className={`${errors.lastName && touched.lastName ? 'input-error' : ''}`}
+                className={`${
+                  errors.lastName && touched.lastName ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="lastName"
@@ -133,12 +152,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm"
               />
             </div>
+
+            {/* Email Input Field */}
             <div className="mb-5">
               <FieldComponent
                 name="email"
                 type="email"
                 placeholder="Email"
-                className={`${errors.email && touched.email ? 'input-error' : ''}`}
+                className={`${
+                  errors.email && touched.email ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="email"
@@ -146,12 +169,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm mt-1"
               />
             </div>
+
+            {/* Password Input Field */}
             <div className="mb-5">
               <FieldComponent
                 type="password"
                 name="password"
                 placeholder="Password"
-                className={`${errors.password && touched.password ? 'input-error' : ''}`}
+                className={`${
+                  errors.password && touched.password ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="password"
@@ -159,12 +186,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm mt-1"
               />
             </div>
+
+            {/* Confirm Password Input Field */}
             <div className="mb-5">
               <FieldComponent
                 type="password"
                 name="rePassword"
                 placeholder="Confirm Password"
-                className={`${errors.rePassword && touched.rePassword? 'input-error' : ''}`}
+                className={`${
+                  errors.rePassword && touched.rePassword ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="rePassword"
@@ -172,12 +203,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm mt-1"
               />
             </div>
+
+            {/* Phone Input Field */}
             <div className="mb-5">
               <FieldComponent
                 name="tel"
                 type="text"
                 placeholder="Phone"
-                className={`${errors.phone && touched.phone? 'input-error' : ''}`}
+                className={`${
+                  errors.phone && touched.phone ? 'input-error' : ''
+                }`}
               />
               <ErrorMessage
                 name="tel"
@@ -185,15 +220,16 @@ export default function RegisterForm() {
                 className="text-red-500 text-sm mt-1"
               />
             </div>
+
             {/* Submit Button */}
             {loading ? (
-              <Loading />
+              <Loading /> // Show the loading component while loading state is true
             ) : (
-              <ButtonComponent type="submit" text="Sign in" />
+              <ButtonComponent type="submit" text="Sign up" /> // Show submit button when not loading
             )}
           </Form>
         )}
       </Formik>
     </div>
-  )
+  );
 }

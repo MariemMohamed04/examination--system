@@ -104,31 +104,6 @@ a {
   font: 400 19px var(--secondary-font);
 }
 
-/*
-
-box-shadow: 0px 15px 40px 0px #0000001A;
-
-
-*/
-
-/* Subjects container */
-.scrollable-container::-webkit-scrollbar {
-  width: 10px;
-}
-
-.scrollable-container::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-.scrollable-container::-webkit-scrollbar-thumb {
-  background: red;
-  border-radius: 10px;
-}
-
-.scrollable-container::-webkit-scrollbar-thumb:hover {
-  background: darkred;
-}
-
 input[type="radio"] {
   appearance: none;
   width: 20px;
